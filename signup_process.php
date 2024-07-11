@@ -1,5 +1,4 @@
 <?php
-$response = array('success' => false, 'message' => '');
 require 'db.php'; // Include the database connection file
 
 // Validate inputs
@@ -49,22 +48,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $validationMessage = validate($data);
   if ($validationMessage !== '') {
     $response['message'] = $validationMessage;
-    
+
     // Return response as JSON
     header('Content-Type: application/json');
     echo json_encode($response);
   } else {
-    // Hash the password using bcrypt
-    $hashedPassword = password_hash($data['password'], PASSWORD_BCRYPT);
+    // Check if email already exists
+    $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
+    $stmt->bind_param("s", $data['email']);
+    $stmt->execute();
+    $stmt->store_result();
+    if ($stmt->num_rows > 0) {
+      $response['message'] = 'Email is already in use.';
 
-    // Prepare and bind
-    $stmt = $conn->prepare("INSERT INTO users (name, email, phone, password) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("ssss", $data['name'], $data['email'], $data['phone'], $hashedPassword);
-
-    if ($stmt->execute()) {
-      echo json_encode(['status' => 'success', 'message' => 'Sign up successful.']);
+      // Return response as JSON
+      header('Content-Type: application/json');
+      echo json_encode($response);
     } else {
-      echo json_encode(['status' => 'error', 'message' => 'Failed to sign up.']);
+      // Hash the password using bcrypt
+      $hashedPassword = password_hash($data['password'], PASSWORD_BCRYPT);
+
+      // Prepare and bind
+      $stmt = $conn->prepare("INSERT INTO users (name, email, phone, password) VALUES (?, ?, ?, ?)");
+      $stmt->bind_param("ssss", $data['name'], $data['email'], $data['phone'], $hashedPassword);
+
+      if ($stmt->execute()) {
+        echo json_encode(['status' => 'success', 'message' => 'Sign up successful.']);
+      } else {
+        echo json_encode(['status' => 'error', 'message' => 'Failed to sign up.']);
+      }
     }
 
     $stmt->close();

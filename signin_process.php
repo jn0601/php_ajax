@@ -1,5 +1,4 @@
 <?php
-$response = array('success' => false, 'message' => '');
 require 'db.php'; // Include the database connection file
 
 // Validate inputs
