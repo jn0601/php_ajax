@@ -57,7 +57,7 @@
         input.setCustomValidity('');
       } else {
         // Invalid phone number, set a custom validation message
-        input.setCustomValidity('Số điện thoại phải đủ 10 kí tự.');
+        input.setCustomValidity('Phone number must be 10 characters.');
       }
     }
     $(document).ready(function() {
