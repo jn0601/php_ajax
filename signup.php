@@ -37,58 +37,13 @@
     <input type="password" class="form-control" id="password" name="password" required>
     <br>
     <label for="confirm_password" class="form-label">Confirm Password:</label>
-    <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+    <input type="password" class="form-control" id="confirm_password" name="confirm_password" oninput="validatePassword()" required>
     <br>
     <button type="submit" class="btn btn-primary">Sign Up</button>
   </form>
   <div id="message"></div>
   
-  <script>
-    function validatePhoneNumber() {
-      // Get the input element using the id
-      var input = document.getElementById('phone');
-  
-      // Remove non-numeric characters from the input
-      var phoneNumber = input.value.replace(/\D/g, '');
-  
-      // Check if the phone number has exactly 10 digits
-      if (phoneNumber.length === 10) {
-        // Valid phone number
-        input.setCustomValidity('');
-      } else {
-        // Invalid phone number, set a custom validation message
-        input.setCustomValidity('Phone number must be 10 characters.');
-      }
-    }
-    $(document).ready(function() {
-      $('#signupForm').on('submit', function(event) {
-        event.preventDefault();
-
-        let formData = {
-          name: $('#name').val(),
-          email: $('#email').val(),
-          phone: $('#phone').val(),
-          password: $('#password').val(),
-          confirm_password: $('#confirm_password').val()
-        };
-
-        $.ajax({
-          url: 'signup_process.php',
-          type: 'POST',
-          data: formData,
-          dataType: 'json',
-          success: function(response) {
-            if (response.success) {
-              $('#message').html('<span class="success">' + response.message + '</span>');
-            } else {
-              $('#message').html('<span class="error">' + response.message + '</span>');
-            }
-          }
-        });
-      });
-
-    });
-  </script>
+  <script src="main.js"></script>
 </body>
 
 </html>
